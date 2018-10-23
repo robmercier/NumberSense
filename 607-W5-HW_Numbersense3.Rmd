@@ -1,0 +1,74 @@
+---
+title: "Homework Week 5 - NumberSense"
+author: "Robert_M"
+date: "October 23, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load packages 
+```{r message=FALSE}
+library(tidyr)
+library(dplyr)
+```
+
+
+#Reading in File
+```{r}
+NS <- url("https://raw.githubusercontent.com/robmercier/NumberSense/master/Numbersense.csv")
+Numbersense <- read.csv(NS,header = TRUE)
+Numbersense
+```
+
+## Naming 1st & 2nd Columns
+```{r}
+names(Numbersense)[1] <- "Airlines"
+names(Numbersense)[2] <- "Arrival"
+Numbersense
+```
+
+#Deleting the null row
+```{r}
+Numbersense <- Numbersense[-3,]
+Numbersense
+```
+
+#Adding new column with full airline names
+```{r}
+for (i in 1:dim(Numbersense)[1]){
+  if (i %% 2 == 0){
+    Numbersense$Airline[i] <- Numbersense$Airline[i-1] 
+  }
+}
+Numbersense
+```
+
+#Reordering the columns 
+```{r}
+Numbersense <- Numbersense[c(8,1,2,3,4,5,6,7)]
+Numbersense
+```
+
+#Deleting the extra column
+```{r}
+Numbersense$Airlines <- NULL
+Numbersense
+```
+
+#Transposing city columns into one city columns with counts 
+```{r}
+Numbersense <- tidyr::gather(Numbersense, "City", "Count", 3:7)
+Numbersense
+```
+
+#Distributing varibles
+```{r}
+Numbersense$Airline <- as.factor(Numbersense$Airline)
+Numbersense$Arrival <- as.factor(Numbersense$Arrival)
+Numbersense2 <- tidyr::spread(Numbersense, Arrival, Count)
+Numbersense2
+```
+
